@@ -1,0 +1,82 @@
+# incomplete 
+
+# Name: Tina Quan
+# Course: CPE 101
+# Instructor: Daniel Kauffman
+# Assignment: Project 5 
+# Term: Fall 2019 
+
+
+import sys 
+
+def main():
+  c_arg = sys.argv 
+  try:
+    image_file = open(c_arg[2] , "r") 
+    raw_pixels = image_file.readlines()
+    image_file.close()
+    header2 = raw_pixels[1].split()
+    width = int(header2[0]) 
+    pixels = []
+    for line in raw_pixels[3:]:
+      pixel = line.split()
+      pixels.append([int(pixel[0]) , int(pixel[1]) , int(pixel[2])])
+    if c_arg[1] == "fade":
+      if get_fade_arg(c_arg) == None:
+        print("Usage: python pixelmagic.py fade <image> <row> <col> <radius>")
+        return None
+      else:
+        row , col , radius = get_fade_arg(c_arg)
+        new_pixels = fade_image(pixels , width , row , col , radius) 
+    elif c_arg[1] == "blur":
+      reach = find_reach(c_arg)
+      #new_pixels = blur_image(pixels , width , reach) 
+    else:  
+      print("Error: Invalid Mode") 
+      return None 
+    write_file(new_pixels , c_arg , raw_pixels)
+  except FileNotFoundError:
+    print("Error: Unable to Open {0}".format(c_arg[2]))
+  except IndexError:
+    print("Usage: python pixelmagic.py <mode> <image>") 
+    
+def write_file(new_pixels , command_list , raw_pixels):
+  new = open("{0}.ppm".format(command_list[1]) , "w")
+  new.write(raw_pixels[0])
+  new.write(raw_pixels[1])
+  new.write(raw_pixels[2]) 
+  for pixel in new_pixels:
+    pixel_strings = [str(p) for p in pixel]
+    new.write(" ".join(pixel_strings) + "/n")
+  new.close() 
+  
+def get_fade_arg(command_list):
+  if len(command_list) < 6:
+    return None
+  else:
+    r = int(command_list[3]) 
+    c = int(command_list[4]) 
+    rad = int(command_list[5]) 
+    return r , c , rad
+    
+def find_reach(command_list):
+  if len(command_list) < 4:
+    r = 4
+  else:
+    r = int(command_list[3]) 
+  return r
+  
+def fade_image(pixels , width , row , col , radius):
+  for i in range(len(pixels)):
+    d = ((((i // width) - row) ** 2) + (((i % width) - col) ** 2)) ** 0.5
+    scale = (radius - d) / radius 
+    if scale < 0.2:
+      scale = 0.2
+    pixels[i][0] = int(pixels[i][0] * scale) 
+    pixels[i][1] = int(pixels[i][1] * scale) 
+    pixels[i][2] = int(pixels[i][2] * scale) 
+  return pixels 
+  
+#def blur_image(pixels , width , reach)::
+  #blurred = []
+  
