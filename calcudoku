@@ -1,0 +1,108 @@
+# Name: Tina Quan
+# Course: CPE 101
+# Instructor: Daniel Kauffman
+# Assignment: Project 3 (Calcudoku) 
+# Term: Fall 2019 
+
+def main():
+  cages = get_cage_list()       # 2D list of cages
+  n = find_n(cages)             # find n for NxN grid
+  grid = create_grid(n)         # 2D list of grid 
+  cage_cell = 0 
+  
+  while cage_cell < n ** 2:
+    # determine what cell is being populated 
+    r = cage_cell // n
+    c = cage_cell % n 
+    grid[r][c] += 1
+    
+    # validity checks 
+    valid_r = validate_all_lines(grid)
+    valid_c = validate_all_lines(transpose(grid))
+    valid_cage = validate_all_cages(grid , cages) 
+    
+    if grid[r][c] <= n:
+      if valid_r == True and valid_c == True and valid_cage == True:
+        cage_cell += 1 
+      elif grid[r][c] < n:
+        pass    # keep incrementing until it's true or exceeds the max value a cage can be 
+    else:
+      grid[r][c] = 0    # set current cell to 0 
+      cage_cell -= 1    # exceeded max value --> go back to the previous cell cage 
+      
+  display_grid(grid) 
+  
+# return a 2D list (each inner list is a cage)
+def get_cage_list():
+  num_cages = int(input()) # reads the first line of the cages data 
+  cage_list = []
+  next_line = ""
+  str_to_int = []
+  for i in range(num_cages):
+    next_line = input()
+    str_to_int = [int(value) for value in next_line.split()]
+    cage_list.append(str_to_int)
+  return cage_list 
+  
+# create NxN grid and fill with zeros 
+def find_n(cage_data):
+  n = 0 
+  for cage in cage_data: 
+    for index in cage[1:]:
+      n += 1 
+  return int(n ** (1 / 2)) 
+
+def create_grid(n):
+  return [[0 for row in range(n)] for col in range(n)]
+  
+# display the answer
+def display_grid(grid):
+  next_row = ""
+  for row in grid:
+    for cell in row:
+      if cell == row[-1]:
+        next_row += (str(cell))
+      else: 
+        next_row += (str(cell) + " ") 
+    print(next_row)
+    next_row = ""
+    
+# return the transposition of a given grid 
+# rows to columns and columns to rows 
+def transpose(grid):
+  return [[row[i] for row in grid] for i in range(len(grid))]
+  
+# return true if list contains no duplicate positive numbers
+def validate_line(ints):
+  positive = [num for num in ints if num > 0]
+  s = 0 
+  for value in positive: 
+    for i in range(s + 1 , len(positive)):
+      if value == positive[i]:
+        return False
+    s += 1 
+  return True 
+  
+def validate_all_lines(grid):
+  for line in grid:
+    if validate_line(line) == False:
+      return False
+  return True 
+  
+def validate_cage(grid , cage):
+  full_grid = [i for line in grid for i in line]
+  values_in_cage = [full_grid[position] for position in cage[1:]]
+  if 0 in values_in_cage:
+    return sum(values_in_cage) < cage[0]
+  else:
+    return sum(values_in_cage) == cage[0]
+    
+def validate_all_cages(grid , cages):
+  for cage in cages: 
+    if validate_cage(grid , cage) == False:
+      return False
+  return True 
+  
+if __name__ == "__main__":
+  main()
+  
