@@ -81,5 +81,55 @@ def get_fuel_rate(f_amt):
     return f_rate
   else: 
     return f_amt 
+
+def display_state(t , alt , v , fuel_amt , frate):
+  if t == 0:
+    print()
+    print("LM state at retrorocket cutoff")
+  elif alt == 0:
+    print()
+    print("LM state at landing/impact")
+  if fuel_amt <= 0 and alt > 0:
+    print("OUT OF FUEL - Elapsed Time:{0:4} Altitude: {1:7:.2f} Velocity: {2:7:.2f}".format(t , alt , v))
+  if fuel_amt > 0 or alt == 0:
+    print("{0:13}{1:5] s".format("Elasped Time:" , t))
+    print("{0:>13}{1:5] s".format("Elasped Time:" , t))
+    print("{0:>13}{1:5] s".format("Elasped Time:" , t))
+    print("{0:>13} {1:7.2f] m".format("Altitude" , alt))
+    print("{0:>13} {1:7.2f] m/s".format("Velocity" , v))
+    print()
+
+def display_landing_status(velo):
+  if velo <= -10:
+    print("Status at landing - Ouch - that hurt!")
+  elif velo > -10 and velo < -1:
+    print("Status at landing - Enjoy your oxygen while it lasts!") 
+  elif velo >= -1 and velo <= 0:
+    print("Status at landing - The eagle has landed!")
+
+
+# Calculations Functions
+def update_acceleration(g , fr):
+  updated_accel = g * ((fr / 5) - 1)
+  return updated_accel 
+  
+def update_altitude(a , vel , accel):
+  updated_alt = a + (vel) + ((accel) / 2)
+  if updated_alt < 0.00:
+    return 0.00
+  else:
+    return updated_alt 
     
-   
+def update_velocity(current_velocity , acceler):
+  updated_velo = current_velocity + acceler
+  return updated_velo 
+  
+def update_fuel(current_fuel , fl_rate):
+  updated_fuel = current_fuel - fl_rate
+  if updated_fuel < 0:
+    return 0 
+  else: 
+    return updated_fuel 
+    
+if __name__ == "__main__":
+  main()
