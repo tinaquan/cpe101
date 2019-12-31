@@ -1,0 +1,18 @@
+# Name: Tina Quan
+# Course: CPE 101
+# Instructor: Daniel Kauffman 
+# Assignment: Project 1 (Moonlander) 
+# Term: Fall 2019 
+
+
+def main(): 
+  show_welcome()
+  time = 0 
+  velocity = 0.0
+  fuel_rate = 0 
+  gravity = 1.62
+  acceleration = 0.00
+  # gather initial inputs from user 
+  altitude = get_altitude()
+  fuel = get_fuel()
+  # start the LM simulator 
