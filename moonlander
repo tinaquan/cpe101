@@ -16,3 +16,70 @@ def main():
   altitude = get_altitude()
   fuel = get_fuel()
   # start the LM simulator 
+  while altitude > 0:
+    if fuel > 0: 
+      display_state(time , altitude , velocity , fuel , fuel_rate)
+      fuel_rate = get_fuel_rate(fuel)
+      fuel = update_fuel(fuel , fuel_rate)
+      acceleration = update_altitude(altitude , velocity , acceleration)
+      velocity = update_velocity(velocity , acceleration) 
+      time += 1 
+    else:
+      if altitude > 0:
+        display_state(time , altitude , velocity , fuel , fuel_rate)
+      fuel_rate = 0 
+      acceleration = update_acceleration(gravity , fuel_rate) 
+      altitude = update_altitude(altitude , velocity , acceleration) 
+      velocity = update_velocity(velocity , acceleration) 
+      time += 1 
+  # exit the loop above when altitude is 0 (landing) 
+  display_state(time , altitude , velocity , fuel , fuel_rate)
+  display_landing_status(velocity) 
+
+# I/O Functions
+def show_welcome():
+  print()
+  print("Welcome aboard the Lunar Module Flight Simulator") 
+  print()
+  print("   To begin you must specify the LM's initial altitude")
+  print("   and fuel level. To simulate the actual LM use")
+  print("   values of 1300 meters and 500 liters, respectively.")
+  print()
+  print("   Good luck and may the force be with you!")
+  print()
+
+def get_altitude():
+  ia = input("Enter the initial altitude of the LM (in meters): ") 
+  ia = int(ia) 
+  # when user enters an invalid input 
+  while ia < 1 or ia > 9999:
+    print("ERROR: Altitude must be between 1 and 9999, inclusive, please try again") 
+    ia = input("Enter the initial altitude of the LM (in meters): ") 
+    ia = int(ia) 
+  return ia 
+
+def get_fuel():
+  f = input("Enter the initial amount of fuel on board the LM (in liters): ") 
+  f = int(f)
+  # when user enters an invalid input 
+  while f < 1: 
+    print("ERROR: Amount of fuel must be positive, please try again")
+    f = input("Enter the initial amount of fuel on board the LM (in liters): ") 
+    f = int(f)
+  return f 
+  
+def get_fuel_rate(f_amt):
+  f_rate = input("Enter fuel rate (0-9, 0=freefall, 5=constant velocity, 9=max thrust): ") 
+  f_rate = int(f_rate) 
+  # when user enters an invalid input
+  while f_rate < 0 or f_rate > 9:
+    print("ERROR: Fuel rate must be between 0 and 9, inclusive) 
+    print()
+    f_rate = input("Enter fuel rate (0-9, 0=freefall, 5=constant velocity, 9=max thrust): ") 
+    f_rate = int(f_rate) 
+  if f_rate <= f_amt:
+    return f_rate
+  else: 
+    return f_amt 
+    
+   
